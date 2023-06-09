@@ -19,6 +19,7 @@ spec:
         - name: SPRING_PROFILES_ACTIVE
           value: production-microservice
         command: ["java","-Xmx50m","-jar","webapp.jar"]
+        imagePullPolicy: Always
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -41,6 +42,7 @@ spec:
         - name: SPRING_PROFILES_ACTIVE
           value: production-microservice
         command: ["java","-Xmx50m","-jar","webapp.jar"]
+        imagePullPolicy: Always
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -63,6 +65,7 @@ spec:
         - name: SPRING_PROFILES_ACTIVE
           value: production-microservice
         command: ["java","-Xmx50m","-jar","webapp.jar"]
+        imagePullPolicy: Always
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -84,6 +87,7 @@ spec:
         env:
         - name: SPRING_PROFILES_ACTIVE
           value: production-microservice
+        imagePullPolicy: Always
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -105,6 +109,7 @@ spec:
         env:
         - name: SPRING_PROFILES_ACTIVE
           value: production-microservice
+        imagePullPolicy: Always
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -113,14 +118,14 @@ metadata:
 spec:
   selector:
     matchLabels:
-      version: safe
       app: staff-service
+      version: safe
   replicas: 1
   template: # template for the pods
     metadata:
       labels:
-        version: safe
         app: staff-service
+        version: safe
     spec:
       containers:
       - name: staff-service
@@ -128,40 +133,14 @@ spec:
         env:
         - name: SPRING_PROFILES_ACTIVE
           value: production-microservice
+        imagePullPolicy: Always
         ports:
         - containerPort: 8080
 ---
-#apiVersion: apps/v1
-#kind: Deployment
-#metadata:
-#  name: staff-service-risky
-#spec:
-#  selector:
-#    matchLabels:
-#      version: risky 
-#      app: staff-service
-#  replicas: 1
-#  template: # template for the pods
-#    metadata:
-#      labels:
-#        version: risky
-#        app: staff-service
-#    spec:
-#      containers:
-#      - name: staff-service
-#        image: richardchesterwood/istio-fleetman-staff-service:6
-#        env:
-#        - name: SPRING_PROFILES_ACTIVE
-#          value: production-microservice
-#        ports:
-#        - containerPort: 8080
-#---
 apiVersion: v1
 kind: Service
 metadata:
   name: fleetman-webapp
-  annotations:
-        service.beta.kubernetes.io/do-loadbalancer-enable-backend-keepalive: "false"
 spec:
   # This defines which pods are going to be represented by this Service
   # The service becomes a network endpoint for either other services
@@ -172,7 +151,7 @@ spec:
     - name: http
       port: 80
       nodePort: 30080
-  type: LoadBalancer
+  type: NodePort
 ---
 apiVersion: v1
 kind: Service
@@ -225,4 +204,3 @@ spec:
     - name: http
       port: 8080
   type: ClusterIP
-
